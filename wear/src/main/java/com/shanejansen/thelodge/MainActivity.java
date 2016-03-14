@@ -43,7 +43,8 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
             @Override
             public void switchToggled(int index, boolean isChecked) {
                 Device device = mDevices.get(index);
-                sendMobileMessage(WEAR_SET_STATE, device.getId() + " " + isChecked);
+                device.setIsOn(isChecked);
+                sendMobileMessage(WEAR_SET_STATE, device.getPin() + " " + isChecked);
             }
         });
         WearableListView lvDevices = (WearableListView) findViewById(R.id.lvDevices);

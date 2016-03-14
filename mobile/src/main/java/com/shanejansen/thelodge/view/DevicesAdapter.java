@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -47,11 +48,9 @@ public class DevicesAdapter extends ArrayAdapter<Device> {
         viewHolder.tvName.setText(mDevices.get(position).getName());
         viewHolder.tvPin.setText(mContext.getResources().getString(R.string.pin, mDevices.get(position).getPin()));
         viewHolder.swState.setChecked(mDevices.get(position).isOn());
-
-        viewHolder.swState.setOnClickListener(new View.OnClickListener() {
+        viewHolder.swState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                boolean isChecked = viewHolder.swState.isChecked();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mDevicesAdapterInterface.switchToggled(position, isChecked);
             }
         });

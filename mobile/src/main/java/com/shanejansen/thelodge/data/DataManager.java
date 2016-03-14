@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class DataManager {
     // Constants
-    private static final String GET_STATE_ENDPOINT = "/control/get-state.php";
-    private static final String SET_STATE_ENDPOINT = "/control/set-state.php";
+    private static final String GET_STATE_ENDPOINT = "/get-state.php";
+    private static final String SET_STATE_ENDPOINT = "/set-state.php";
 
     public static void refreshDevices(Context context, final NetworkInf<List<Device>> networkInf) {
         Ion.with(context)
@@ -37,10 +37,9 @@ public class DataManager {
                         if (result != null) {
                             for (int i = 0; i < result.size(); i++) {
                                 JsonObject j = result.get(i).getAsJsonObject();
-                                devices.add(new Device(j.get("id").getAsString(),
+                                devices.add(new Device(j.get("pin").getAsInt(),
                                         j.get("name").getAsString(),
                                         j.get("type").getAsString(),
-                                        j.get("pin").getAsInt(),
                                         j.get("state").getAsString()));
                             }
 
@@ -50,11 +49,11 @@ public class DataManager {
                 });
     }
 
-    public static void activateDevice(Context context, String deviceId, boolean state,
+    public static void activateDevice(Context context, int pin, boolean state,
                                       final NetworkInf<String> networkInf) {
         Ion.with(context)
                 .load(Secret.BASE_URL + SET_STATE_ENDPOINT)
-                .setStringBody(deviceId + " " + state)
+                .setStringBody(pin + " " + state)
                 .asString()
                 .setCallback(new FutureCallback<String>() {
                     @Override

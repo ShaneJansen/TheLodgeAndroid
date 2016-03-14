@@ -5,6 +5,7 @@ import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -36,11 +37,9 @@ public class DevicesAdapter extends WearableListView.Adapter {
         final ItemViewHolder itemHolder = (ItemViewHolder) holder;
         itemHolder.tvName.setText(mDevices.get(position).getName());
         itemHolder.swState.setChecked(mDevices.get(position).isOn());
-
-        itemHolder.swState.setOnClickListener(new View.OnClickListener() {
+        itemHolder.swState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                boolean isChecked = itemHolder.swState.isChecked();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mDevicesAdapterInterface.switchToggled(position, isChecked);
             }
         });

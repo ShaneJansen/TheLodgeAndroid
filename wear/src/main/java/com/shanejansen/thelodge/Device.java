@@ -4,20 +4,19 @@ package com.shanejansen.thelodge;
  * Created by Shane Jansen on 3/6/16.
  */
 public class Device {
-    private String mId, mName, mType;
     private int mPin;
+    private String mName, mType;
     private boolean mIsOn;
 
-    public Device(String id, String name, String type, int pin, String state) {
-        mId = id;
+    public Device(int pin, String name, String type, String state) {
+        mPin = pin;
         mName = name;
         mType = type;
-        mPin = pin;
         mIsOn = state.equals("on");
     }
 
-    public String getId() {
-        return mId;
+    public int getPin() {
+        return mPin;
     }
 
     public String getName() {
@@ -28,16 +27,12 @@ public class Device {
         return mType;
     }
 
-    public int getPin() {
-        return mPin;
-    }
-
     public boolean isOn() {
         return mIsOn;
     }
 
-    public void setId(String id) {
-        mId = id;
+    public void setPin(int pin) {
+        mPin = pin;
     }
 
     public void setName(String name) {
@@ -46,10 +41,6 @@ public class Device {
 
     public void setType(String type) {
         mType = type;
-    }
-
-    public void setPin(int pin) {
-        mPin = pin;
     }
 
     public void setIsOn(boolean isOn) {

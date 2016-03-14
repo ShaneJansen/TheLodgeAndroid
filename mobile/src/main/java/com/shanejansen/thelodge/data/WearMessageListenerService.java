@@ -25,9 +25,9 @@ public class WearMessageListenerService extends WearableListenerService {
                 break;
             case MainFragment.WEAR_SET_STATE:
                 String[] dataChunks = new String(messageEvent.getData()).split(" ");
-                String deviceId = dataChunks[0];
+                int pin = Integer.parseInt(dataChunks[0]);
                 boolean state = Boolean.parseBoolean(dataChunks[1]);
-                setState(deviceId, state);
+                setState(pin, state);
                 break;
         }
     }
@@ -52,8 +52,8 @@ public class WearMessageListenerService extends WearableListenerService {
         });
     }
 
-    private void setState(String deviceId, boolean state) {
-        DataManager.activateDevice(this, deviceId, state, new DataManager.NetworkInf<String>() {
+    private void setState(int pin, boolean state) {
+        DataManager.activateDevice(this, pin, state, new DataManager.NetworkInf<String>() {
             @Override
             public void onCompleted(String result) {
                 // State set

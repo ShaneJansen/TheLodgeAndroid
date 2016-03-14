@@ -37,7 +37,9 @@ public class MainFragment extends ListFragment {
         mDevicesAdapter = new DevicesAdapter(getActivity(), mDevices, new DevicesAdapter.DevicesAdapterInterface() {
             @Override
             public void switchToggled(int index, boolean isChecked) {
-                activateDevice(mDevices.get(index), isChecked);
+                Device device = mDevices.get(index);
+                device.setIsOn(isChecked);
+                activateDevice(device, isChecked);
             }
         });
         setHasOptionsMenu(true);
@@ -86,11 +88,11 @@ public class MainFragment extends ListFragment {
     }
 
     private void activateDevice(Device device, boolean state) {
-        DataManager.activateDevice(getActivity(), device.getId(), state,
+        DataManager.activateDevice(getActivity(), device.getPin(), state,
                 new DataManager.NetworkInf<String>() {
                     @Override
                     public void onCompleted(String result) {
-                        Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
