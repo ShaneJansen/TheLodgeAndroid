@@ -2,8 +2,12 @@
 
 ### Overview
 
-This is an Android application that can be used to turn on and off any
-device via a webservice.  This repo also supports Android Wear.
+This is an Android application for
+[The Lodge Server](https://github.com/ShaneJansen/TheLodgeServer)
+that can be used to turn on and off any
+device via this webservice.  This repo also supports Android Wear.
+
+For full project details visit: http://shanejansen.com/android-wear-and-raspberry-pi-controlling-mains-power
 
 ### Setup
 
