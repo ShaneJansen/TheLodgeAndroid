@@ -2,6 +2,8 @@ package com.shanejansen.thelodge.data;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -9,12 +11,16 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.shanejansen.thelodge.view.MainActivity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,44 +29,73 @@ import java.util.List;
  */
 public class DataManager {
     // Constants
-    private static final String GET_STATE_ENDPOINT = "/get-state.php";
-    private static final String SET_STATE_ENDPOINT = "/set-state.php";
+    public static final String GET_STATE_ENDPOINT = "/get-state.php";
+    public static final String SET_STATE_ENDPOINT = "/set-state.php";
 
-    public static void refreshDevices(Context context, final NetworkInf<List<Device>> networkInf) {
-        Ion.with(context)
-                .load(Secret.BASE_URL + GET_STATE_ENDPOINT)
-                .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
+    public static void refreshDevices(final NetworkInf<List<Device>> networkInf) {
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String response = "";
+                try {
+                    URL url = new URL(Secret.BASE_URL + GET_STATE_ENDPOINT);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String line;
+                    while ((line = in.readLine()) != null) response += line;
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Gson gson = new Gson();
+                final List<Device> devices = gson.fromJson(response, new TypeToken<ArrayList<Device>>(){}.getType());
+                handler.post(new Runnable() {
                     @Override
-                    public void onCompleted(Exception e, JsonArray result) {
-                        List<Device> devices = new ArrayList<>();
-                        if (result != null) {
-                            for (int i = 0; i < result.size(); i++) {
-                                JsonObject j = result.get(i).getAsJsonObject();
-                                devices.add(new Device(j.get("pin").getAsInt(),
-                                        j.get("name").getAsString(),
-                                        j.get("type").getAsString(),
-                                        j.get("state").getAsString()));
-                            }
-
-                        }
-                        if (networkInf != null) networkInf.onCompleted(devices);
+                    public void run() {
+                        networkInf.onCompleted(devices);
                     }
                 });
+            }
+        }).start();
     }
 
-    public static void activateDevice(Context context, int pin, boolean state,
+    public static void activateDevice(final int pin, final boolean state,
                                       final NetworkInf<String> networkInf) {
-        Ion.with(context)
-                .load(Secret.BASE_URL + SET_STATE_ENDPOINT)
-                .setStringBody(pin + " " + state)
-                .asString()
-                .setCallback(new FutureCallback<String>() {
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String response = "";
+                try {
+                    URL url = new URL(Secret.BASE_URL + SET_STATE_ENDPOINT);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    String str = pin + " " + state;
+                    byte[] outputBytes = str.getBytes("UTF-8");
+                    OutputStream os = connection.getOutputStream();
+                    os.write(outputBytes);
+                    os.close();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String line;
+                    while ((line = in.readLine()) != null) response += line;
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                final String finalResponse = response;
+                handler.post(new Runnable() {
                     @Override
-                    public void onCompleted(Exception e, String result) {
-                        if (networkInf != null) networkInf.onCompleted(result);
+                    public void run() {
+                        networkInf.onCompleted(finalResponse);
                     }
                 });
+            }
+        }).start();
     }
 
     public static void setupGoogleApiClient(Context context, final NetworkInf<GoogleApiClient> networkInf) {

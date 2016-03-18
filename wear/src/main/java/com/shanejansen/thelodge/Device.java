@@ -4,46 +4,39 @@ package com.shanejansen.thelodge;
  * Created by Shane Jansen on 3/6/16.
  */
 public class Device {
-    private int mPin;
-    private String mName, mType;
-    private boolean mIsOn;
-
-    public Device(int pin, String name, String type, String state) {
-        mPin = pin;
-        mName = name;
-        mType = type;
-        mIsOn = state.equals("on");
-    }
+    private int pin;
+    private String name, type;
+    private boolean isOn;
 
     public int getPin() {
-        return mPin;
+        return pin;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public String getType() {
-        return mType;
+        return type;
     }
 
     public boolean isOn() {
-        return mIsOn;
+        return isOn;
     }
 
     public void setPin(int pin) {
-        mPin = pin;
+        this.pin = pin;
     }
 
     public void setName(String name) {
-        mName = name;
+        this.name = name;
     }
 
     public void setType(String type) {
-        mType = type;
+        this.type = type;
     }
 
     public void setIsOn(boolean isOn) {
-        mIsOn = isOn;
+        this.isOn = isOn;
     }
 }

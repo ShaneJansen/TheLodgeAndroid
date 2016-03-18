@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.shanejansen.thelodge.R;
 import com.shanejansen.thelodge.data.DataManager;
@@ -76,7 +75,7 @@ public class MainFragment extends ListFragment {
 
     private void refreshDevices() {
         setListShown(false);
-        DataManager.refreshDevices(getActivity(), new DataManager.NetworkInf<List<Device>>() {
+        DataManager.refreshDevices(new DataManager.NetworkInf<List<Device>>() {
             @Override
             public void onCompleted(List<Device> result) {
                 setListShown(true);
@@ -88,7 +87,7 @@ public class MainFragment extends ListFragment {
     }
 
     private void activateDevice(Device device, boolean state) {
-        DataManager.activateDevice(getActivity(), device.getPin(), state,
+        DataManager.activateDevice(device.getPin(), state,
                 new DataManager.NetworkInf<String>() {
                     @Override
                     public void onCompleted(String result) {

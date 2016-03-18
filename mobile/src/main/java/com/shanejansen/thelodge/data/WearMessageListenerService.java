@@ -18,7 +18,7 @@ public class WearMessageListenerService extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        Log.d(MainActivity.TAG, "message received");
+        Log.d(MainActivity.TAG, "Message received.");
         switch (messageEvent.getPath()) {
             case MainFragment.WEAR_GET_STATE:
                 getState();
@@ -33,7 +33,7 @@ public class WearMessageListenerService extends WearableListenerService {
     }
 
     private void getState() {
-        DataManager.refreshDevices(this, new DataManager.NetworkInf<List<Device>>() {
+        DataManager.refreshDevices(new DataManager.NetworkInf<List<Device>>() {
             @Override
             public void onCompleted(final List<Device> devices) {
                 // Devices refreshed
@@ -53,7 +53,8 @@ public class WearMessageListenerService extends WearableListenerService {
     }
 
     private void setState(int pin, boolean state) {
-        DataManager.activateDevice(this, pin, state, new DataManager.NetworkInf<String>() {
+        Log.d(MainActivity.TAG, "Setting state.");
+        DataManager.activateDevice(pin, state, new DataManager.NetworkInf<String>() {
             @Override
             public void onCompleted(String result) {
                 // State set
