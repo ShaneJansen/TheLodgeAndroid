@@ -6,6 +6,7 @@ import android.support.wearable.view.WearableListView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -56,12 +57,18 @@ public class MainActivity extends WearableActivity implements MessageApi.Message
     public void onMessageReceived(MessageEvent messageEvent) {
         pbLoading.setVisibility(View.GONE);
         if (messageEvent.getPath().equalsIgnoreCase(WEAR_GET_STATE)) {
-            String json = new String(messageEvent.getData());
-            Gson gson = new Gson();
-            List<Device> devices = gson.fromJson(json, new TypeToken<ArrayList<Device>>(){}.getType());
-            mDevices.clear();
-            mDevices.addAll(devices);
-            mDevicesAdapter.notifyDataSetChanged();
+            if (messageEvent.getData() != null) {
+                String json = new String(messageEvent.getData());
+                Gson gson = new Gson();
+                List<Device> devices = gson.fromJson(json, new TypeToken<ArrayList<Device>>() {
+                }.getType());
+                mDevices.clear();
+                mDevices.addAll(devices);
+                mDevicesAdapter.notifyDataSetChanged();
+            }
+            else {
+                Toast.makeText(this, "Could not get list of devices.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

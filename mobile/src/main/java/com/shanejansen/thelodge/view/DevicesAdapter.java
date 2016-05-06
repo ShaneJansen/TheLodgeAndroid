@@ -51,7 +51,9 @@ public class DevicesAdapter extends ArrayAdapter<Device> {
         viewHolder.swState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mDevicesAdapterInterface.switchToggled(position, isChecked);
+                // We have to check if it is pressed because this method is called even if
+                // the user did not manually press the button
+                if (buttonView.isPressed()) mDevicesAdapterInterface.switchToggled(position, isChecked);
             }
         });
 

@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.shanejansen.thelodge.R;
 import com.shanejansen.thelodge.data.DataManager;
@@ -78,10 +79,17 @@ public class MainFragment extends ListFragment {
         DataManager.refreshDevices(new DataManager.NetworkInf<List<Device>>() {
             @Override
             public void onCompleted(List<Device> result) {
-                setListShown(true);
-                mDevices.clear();
-                mDevices.addAll(result);
-                mDevicesAdapter.notifyDataSetChanged();
+                if (result == null) {
+                    Toast.makeText(getContext().getApplicationContext(),
+                            "Could not get list of devices.", Toast.LENGTH_LONG).show();
+                    setListShown(true);
+                }
+                else {
+                    setListShown(true);
+                    mDevices.clear();
+                    mDevices.addAll(result);
+                    mDevicesAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -91,7 +99,13 @@ public class MainFragment extends ListFragment {
                 new DataManager.NetworkInf<String>() {
                     @Override
                     public void onCompleted(String result) {
-                        //Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+                        if (result == null) {
+                            Toast.makeText(getContext().getApplicationContext(),
+                                    "Could not activate device.", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            //Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
